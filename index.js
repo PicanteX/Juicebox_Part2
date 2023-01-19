@@ -6,9 +6,9 @@ const { client } = require('./db');
 client.connect();
 const apiRouter = require('./api');
 
-server.use('/api', apiRouter);
 server.use(morgan('dev'));
 server.use(express.json());
+server.use('/api', apiRouter);
 
 server.use((req, res, next) => {
   console.log("<____Body Logger START____>");

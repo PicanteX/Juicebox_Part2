@@ -267,6 +267,19 @@ async function getAllUsers() {
     }
   }
 
+  async function getAllTags() {
+    try {
+      const { rows } = await client.query(`
+        SELECT * 
+        FROM tags;
+      `);
+  
+      return { rows }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async function getPostsByTagName(tagName) {
     try {
       const { rows: postIds } = await client.query(`
@@ -285,20 +298,20 @@ async function getAllUsers() {
     }
   } 
 
-  module.exports = {
+  module.exports = {  
     client,
-    getAllUsers,
     createUser,
     updateUser,
+    getAllUsers,
+    getUserById,
     createPost,
     updatePost,
     getAllPosts,
     getPostsByUser,
-    getUserById,
+    getPostsByTagName,
     createTags,
+    getAllTags,
     createPostTag,
-    addTagsToPost,
-    getPostById,
-    getPostsByTagName
+    addTagsToPost
   }
   

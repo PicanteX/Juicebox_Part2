@@ -1,4 +1,3 @@
-console.log("hi")
 
 const express = require('express');
 const apiRouter = express.Router();
@@ -33,6 +32,14 @@ apiRouter.use(async (req, res, next) => {
       });
     }
   });
+
+apiRouter.use((req, res, next) => {
+    if (req.user) {
+        console.log("User is set:", req.user);
+    }
+    // res.send('hello')
+    next();
+})
 
 const usersRouter = require('./users');
 apiRouter.use('/users', usersRouter);

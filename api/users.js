@@ -3,7 +3,7 @@ const usersRouter = express.Router();
 
 const { getAllUsers, getUserById, getUserByUsername, createUser } = require('../db');
 
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 // const token = jwt.sign({})
 
 usersRouter.get('/', async (req, res) => {

@@ -7,7 +7,7 @@ postsRouter.get('/', async (req, res) => {
   const posts = await getAllPosts();
 
   res.send({
-    posts
+    posts,
   });
 });
 
@@ -25,16 +25,15 @@ postsRouter.post('/', requireUser, async (req, res, next) => {
     const post = await createPost({ title, content, tagArr });
 
     if (post.author.id === req.user.id) {
-      res.send({ post })
+      res.send({ post });
     } else {
       next({
         name: 'UnknownUserError',
-        message: 'Please log in to post content'
-      })
+        message: 'Please log in to post content',
+      });
     }
-    
   } catch ({ name, message }) {
-    next ({ name, message });
+    next({ name, message });
   }
 });
 
@@ -61,12 +60,38 @@ postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
 
     if (originalPost.author.id === req.user.id) {
       const updatedPost = await updatePost(postId, updateFields);
-      res.send({ post: updatedPost })
+      res.send({ post: updatedPost });
     } else {
       next({
         name: 'UnauthorizedUserError',
-        message: 'You cannot update a post that is not yours'
-      })
+        message: 'You cannot update a post that is not yours',
+      });
+    }
+  } catch ({ name, message }) {
+    next({ name, message });
+  }
+});
+
+postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
+  try {
+    const post = await getPostById(req.params.postId);
+
+    if (post && post.author.id === req.user.id) {
+      const updatedPost = await updatePost(post.id, { active: false });
+
+      res.send({ post: updatedPost });
+    } else {
+      next(
+        post
+          ? {
+              name: 'UnauthorizedUserError',
+              message: 'You cannot delete a post which is not yours',
+            }
+          : {
+              name: 'PostNotFoundError',
+              message: 'That post does not exist',
+            }
+      );
     }
   } catch ({ name, message }) {
     next({ name, message });
